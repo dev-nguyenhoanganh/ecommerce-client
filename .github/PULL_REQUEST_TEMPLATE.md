@@ -1,12 +1,3 @@
----
-name: Pull request template
-about: Template used when create a pull request
-title: ''
-labels: ''
-assignees: dev-nguyenhoanganh
-
----
-
 ### Description
 
 Please include a summary of the changes and the related issue. Please also include relevant motivation and context. List any dependencies that are required for this change.
