@@ -1,0 +1,5 @@
+axios
+intl
+ecommerce
+fontsource
+roboto
