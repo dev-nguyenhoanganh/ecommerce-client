@@ -1,11 +1,14 @@
 import React from 'react';
 import './App.css';
-import { AppBar } from './components/layouts';
+import { Header } from './components/layouts';
+import ThemeProvider from './theme';
 
 function App() {
   return (
     <React.Fragment>
-      <AppBar />
+      <ThemeProvider>
+        <Header onOpenNav={() => {}} />
+      </ThemeProvider>
     </React.Fragment>
   );
 }
