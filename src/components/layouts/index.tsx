@@ -1,2 +1,2 @@
 export { default as Navigation } from "./Navigation";
-export { default as AppBar } from "./AppBar";
+export { default as Header } from "./Header";
