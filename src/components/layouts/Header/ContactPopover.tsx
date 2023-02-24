@@ -14,11 +14,11 @@ import {
 } from '@mui/material';
 
 import { Theme } from '../../../interface';
-import { Iconify } from '../../iconify';
 import { OnlineStatus } from '../../../utils/constants';
 import { fToNow } from '../../../utils/formatTime';
 import { CONTACTS } from '../../../_mock/contact';
 import Scrollbar from '../../../components/scrollbar';
+import { Iconify } from '../../iconify';
 
 export default function ContactPopover() {
   // ----------- React Hook ------------------
@@ -52,14 +52,9 @@ export default function ContactPopover() {
       <IconButton
         onClick={handleOpen}
         color={open ? 'primary' : 'default'}
-        sx={{
-          padding: 0,
-          width: 40,
-          height: 40,
-          ...buttonStyle,
-        }}
+        sx={{ width: 40, height: 40, ...buttonStyle }}
       >
-        <img src="/assets/icons/ic_user_group.svg" />
+        <Iconify icon="eva:people-fill" />
       </IconButton>
 
       <Popover
