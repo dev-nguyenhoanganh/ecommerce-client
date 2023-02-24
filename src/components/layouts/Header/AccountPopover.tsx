@@ -1,6 +1,5 @@
-import React, { useState, MouseEvent, useMemo } from 'react';
-import { alpha } from '@mui/material/styles';
-import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
+import React, { useState, MouseEvent } from 'react';
+import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover, useTheme } from '@mui/material';
 
 import account from '../../../_mock/account';
 import { Theme } from '../../../interface';
@@ -25,8 +24,13 @@ const MENU_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+  // ----------- React Hook ------------------
+  const theme: Theme = useTheme();
+
+  // ----------- State declare ---------------
   const [open, setOpen] = useState<HTMLButtonElement | null>(null);
 
+  // ----------- Handle change state ---------------
   const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {
     setOpen(event.currentTarget);
   };
@@ -35,31 +39,9 @@ export default function AccountPopover() {
     setOpen(null);
   };
 
-  const buttonStyle = useMemo(() => {
-    return open
-      ? {
-          '&:before': {
-            zIndex: 1,
-            content: "''",
-            width: '100%',
-            height: '100%',
-            borderRadius: '50%',
-            position: 'absolute',
-            bgcolor: (theme: Theme) => alpha(theme.palette.grey[900], 0.8),
-          },
-        }
-      : {};
-  }, [open]);
-
   return (
-    <>
-      <IconButton
-        onClick={handleOpen}
-        sx={{
-          p: 0,
-          ...buttonStyle,
-        }}
-      >
+    <React.Fragment>
+      <IconButton onClick={handleOpen} sx={{ p: 0 }}>
         <Avatar src={account.photoURL} alt="photoURL" />
       </IconButton>
 
@@ -74,7 +56,8 @@ export default function AccountPopover() {
             p: 0,
             mt: 1.5,
             ml: 0.75,
-            width: 180,
+            width: 220,
+            boxShadow: theme.customShadows.dropdown,
             '& .MuiMenuItem-root': {
               typography: 'body2',
               borderRadius: 0.75,
@@ -82,7 +65,7 @@ export default function AccountPopover() {
           },
         }}
       >
-        <Box sx={{ my: 1.5, px: 2.5 }}>
+        <Box sx={{ my: 1.5, pl: 2.5, pr: 1 }}>
           <Typography variant="subtitle2" noWrap>
             {account.displayName}
           </Typography>
@@ -107,6 +90,6 @@ export default function AccountPopover() {
           Logout
         </MenuItem>
       </Popover>
-    </>
+    </React.Fragment>
   );
 }

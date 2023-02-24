@@ -1,7 +1,8 @@
 import React, { useState, useMemo, MouseEvent } from 'react';
-// @mui
 import { alpha, useTheme } from '@mui/material/styles';
-import { Box, MenuItem, Stack, IconButton, Popover } from '@mui/material';
+import { Box, MenuItem, Stack, IconButton, Popover, Divider, Typography } from '@mui/material';
+
+import { Theme } from '../../../interface';
 
 // ----------------------------------------------------------------------
 
@@ -12,41 +13,43 @@ const LANGS = [
     icon: '/assets/icons/ic_flag_en.svg',
   },
   {
-    value: 'de',
-    label: 'German',
-    icon: '/assets/icons/ic_flag_de.svg',
-  },
-  {
-    value: 'fr',
-    label: 'French',
-    icon: '/assets/icons/ic_flag_fr.svg',
+    value: 'vi',
+    label: 'Vietnamese',
+    icon: '/assets/icons/ic_flag_vn.svg',
   },
 ];
 
 // ----------------------------------------------------------------------
 
 export default function LanguagePopover() {
+  // ----------- React Hook ------------------
+  const theme: Theme = useTheme();
+
+  // ----------- State declare ---------------
   const [open, setOpen] = useState<HTMLButtonElement | null>(null);
+
+  // ----------- Memo logic ---------------
+  const buttonStyle = useMemo(() => {
+    return open
+      ? {
+          '&.MuiButtonBase-root.MuiIconButton-root': {
+            bgcolor: alpha(theme.palette.grey[500], 0.16),
+          },
+        }
+      : {};
+  }, [open, theme]);
+
+  // ----------- Handle change state ---------------
   const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {
     setOpen(event.currentTarget);
   };
-
-  const theme = useTheme();
 
   const handleClose = () => {
     setOpen(null);
   };
 
-  const buttonStyle = useMemo(() => {
-    return open
-      ? {
-          bgcolor: alpha(theme.palette.primary.main, theme.palette.action.focusOpacity),
-        }
-      : {};
-  }, [open, theme]);
-
   return (
-    <>
+    <React.Fragment>
       <IconButton
         onClick={handleOpen}
         sx={{
@@ -67,28 +70,34 @@ export default function LanguagePopover() {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         PaperProps={{
           sx: {
-            p: 1,
+            pb: 1,
             mt: 1.5,
             ml: 0.75,
-            width: 180,
+            width: 220,
+            boxShadow: theme.customShadows.dropdown,
             '& .MuiMenuItem-root': {
-              px: 1,
+              pl: 2.5,
+              pr: 2,
               typography: 'body2',
-              borderRadius: 0.75,
             },
           },
         }}
       >
-        <Stack spacing={0.75}>
+        <Box sx={{ p: theme.spacing(2, 2.5) }}>
+          <Typography component="span" variant="subtitle1">
+            Language
+          </Typography>
+        </Box>
+        <Divider sx={{ borderStyle: 'dashed' }} />
+        <Stack>
           {LANGS.map((option) => (
             <MenuItem key={option.value} selected={option.value === LANGS[0].value} onClick={() => handleClose()}>
               <Box component="img" alt={option.label} src={option.icon} sx={{ width: 28, mr: 2 }} />
-
               {option.label}
             </MenuItem>
           ))}
         </Stack>
       </Popover>
-    </>
+    </React.Fragment>
   );
 }

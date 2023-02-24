@@ -66,7 +66,7 @@ const ERROR = {
   main: '#FF5630',
   dark: '#B71D18',
   darker: '#7A0916',
-  contrastText: GREY[800],
+  contrastText: '#fff',
 };
 
 const darkMode = {
@@ -116,7 +116,7 @@ const lightMode = {
 };
 
 // prettier-ignore
-const palette = (isDarkMode = true) => {
+const palette = (isDarkMode = false) => {
   return isDarkMode ? {
     ...darkMode,
     mode: 'dark' as PaletteMode,

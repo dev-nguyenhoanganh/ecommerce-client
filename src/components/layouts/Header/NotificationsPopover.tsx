@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, MouseEvent } from 'react';
-import { set, sub } from 'date-fns';
+import React, { useState, MouseEvent, useMemo, useCallback } from 'react';
 import { noCase } from 'change-case';
-import { faker } from '@faker-js/faker';
+import { alpha, useTheme } from '@mui/material/styles';
 import {
   Box,
   List,
@@ -20,67 +19,38 @@ import {
   ListItemButton,
 } from '@mui/material';
 
-import { fToNow } from '../../../utils/formatTime';
+import { fToNow, fDateTime } from '../../../utils/formatTime';
 import { Iconify } from '../../../components/iconify';
+import { Theme } from '../../../interface';
+import { NOTIFICATIONS } from '../../../_mock/notification';
 import Scrollbar from '../../../components/scrollbar';
 
 // ----------------------------------------------------------------------
 
-const NOTIFICATIONS = [
-  {
-    id: faker.datatype.uuid(),
-    title: 'Your order is placed',
-    description: 'waiting for shipping',
-    avatar: null,
-    type: 'order_placed',
-    createdAt: set(new Date(), { hours: 10, minutes: 30 }),
-    isUnRead: true,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: faker.name.fullName(),
-    description: 'answered to your comment on the Minimal',
-    avatar: '/assets/images/avatars/avatar_2.jpg',
-    type: 'friend_interactive',
-    createdAt: sub(new Date(), { hours: 3, minutes: 30 }),
-    isUnRead: true,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'You have new message',
-    description: '5 unread messages',
-    avatar: null,
-    type: 'chat_message',
-    createdAt: sub(new Date(), { days: 1, hours: 3, minutes: 30 }),
-    isUnRead: false,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'You have new mail',
-    description: 'sent from Guido Padberg',
-    avatar: null,
-    type: 'mail',
-    createdAt: sub(new Date(), { days: 2, hours: 3, minutes: 30 }),
-    isUnRead: false,
-  },
-  {
-    id: faker.datatype.uuid(),
-    title: 'Delivery processing',
-    description: 'Your order is being shipped',
-    avatar: null,
-    type: 'order_shipped',
-    createdAt: sub(new Date(), { days: 3, hours: 3, minutes: 30 }),
-    isUnRead: false,
-  },
-];
-
 export default function NotificationsPopover() {
+  // ----------- React Hook ------------------
+  const theme: Theme = useTheme();
+
+  // ----------- State declare ---------------
   const [notifications, setNotifications] = useState(NOTIFICATIONS);
-
-  const totalUnRead = notifications.filter((item) => item.isUnRead === true).length;
-
   const [open, setOpen] = useState<HTMLButtonElement | null>(null);
 
+  // ----------- Memo logic ---------------
+  const totalUnRead = useMemo(() => {
+    return notifications.filter((item) => item.isUnRead === true).length;
+  }, [notifications]);
+
+  const buttonStyle = useMemo(() => {
+    return open
+      ? {
+          '&.MuiButtonBase-root.MuiIconButton-root': {
+            bgcolor: alpha(theme.palette.grey[500], 0.16),
+          },
+        }
+      : {};
+  }, [open, theme]);
+
+  // ----------- Handle change state ---------------
   const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {
     setOpen(event.currentTarget);
   };
@@ -89,18 +59,22 @@ export default function NotificationsPopover() {
     setOpen(null);
   };
 
-  const handleMarkAllAsRead = () => {
+  const handleMarkAllAsRead = useCallback(() => {
     setNotifications(
       notifications.map((notification) => ({
         ...notification,
         isUnRead: false,
       }))
     );
-  };
+  }, [notifications]);
 
   return (
-    <>
-      <IconButton color={open ? 'primary' : 'default'} onClick={handleOpen} sx={{ width: 40, height: 40 }}>
+    <React.Fragment>
+      <IconButton
+        color={open ? 'primary' : 'default'}
+        onClick={handleOpen}
+        sx={{ width: 40, height: 40, ...buttonStyle }}
+      >
         <Badge badgeContent={totalUnRead} color="error">
           <Iconify icon="eva:bell-fill" />
         </Badge>
@@ -117,6 +91,7 @@ export default function NotificationsPopover() {
             mt: 1.5,
             ml: 0.75,
             width: 360,
+            boxShadow: theme.customShadows.dropdown,
           },
         }}
       >
@@ -139,7 +114,7 @@ export default function NotificationsPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Scrollbar sx={{ height: { xs: 340, sm: 'auto' } }}>
+        <Scrollbar sx={{ height: { xs: 340, sm: 560 } }}>
           <List
             disablePadding
             subheader={
@@ -149,7 +124,7 @@ export default function NotificationsPopover() {
             }
           >
             {notifications.slice(0, 2).map((notification) => (
-              <NotificationItem key={notification.id} notification={notification} />
+              <NotificationItem key={notification.id} notification={notification} formatToNow />
             ))}
           </List>
 
@@ -175,13 +150,13 @@ export default function NotificationsPopover() {
           </Button>
         </Box>
       </Popover>
-    </>
+    </React.Fragment>
   );
 }
 
 // ----------------------------------------------------------------------
 
-interface NotificationItem {
+interface NotificationDetail {
   createdAt: Date;
   id: string;
   isUnRead: boolean;
@@ -191,7 +166,12 @@ interface NotificationItem {
   avatar: any;
 }
 
-function NotificationItem({ notification }: { notification: NotificationItem }) {
+interface NotificationItemProps {
+  notification: NotificationDetail;
+  formatToNow?: boolean;
+}
+
+function NotificationItem({ notification, formatToNow }: NotificationItemProps): JSX.Element {
   const { avatar, title } = renderContent(notification);
 
   return (
@@ -221,7 +201,7 @@ function NotificationItem({ notification }: { notification: NotificationItem }) 
             }}
           >
             <Iconify icon="eva:clock-outline" sx={{ mr: 0.5, width: 16, height: 16 }} />
-            {fToNow(notification.createdAt)}
+            {formatToNow ? fToNow(notification.createdAt) : fDateTime(notification.createdAt)}
           </Typography>
         }
       />
@@ -231,7 +211,7 @@ function NotificationItem({ notification }: { notification: NotificationItem }) 
 
 // ----------------------------------------------------------------------
 
-function renderContent(notification: NotificationItem) {
+function renderContent(notification: NotificationDetail) {
   const title = (
     <Typography variant="subtitle2">
       {notification.title}

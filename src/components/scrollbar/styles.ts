@@ -1,5 +1,6 @@
 import SimpleBar from 'simplebar-react';
-// @mui
+import 'simplebar-react/dist/simplebar.min.css';
+
 import { alpha, styled } from '@mui/material/styles';
 
 // ----------------------------------------------------------------------
@@ -10,11 +11,7 @@ export const StyledRootScrollbar = styled('div')(() => ({
   overflow: 'hidden',
 }));
 
-export const StyledScrollbar = styled(SimpleBar, {
-  shouldForwardProp: (prop) => prop !== 'timeout',
-  name: 'StyledScrollbar',
-  slot: 'Root',
-})(({ theme }) => ({
+export const StyledScrollbar = styled(SimpleBar)(({ theme }) => ({
   maxHeight: '100%',
   '& .simplebar-scrollbar': {
     '&:before': {

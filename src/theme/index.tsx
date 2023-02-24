@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider as MUIThemeProvider, createTheme, StyledEngineProvider } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import '@fontsource/public-sans';
 
 import palette from './palette';
 import shadows from './shadows';
@@ -29,7 +30,7 @@ export default function ThemeProvider({ children }: ThemeProps) {
       typography,
       shadows: shadows(),
     }, {
-      customShadows: customShadows()
+      customShadows: customShadows(prefersDarkMode)
     }) as Theme;
 
     appTheme.components = componentsOverride(appTheme);

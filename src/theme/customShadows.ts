@@ -4,10 +4,10 @@ import palette from './palette';
 
 // ----------------------------------------------------------------------
 
-const color = palette().grey[500];
-
-export default function customShadows() {
+export default function customShadows(isDarkMode = false) {
+  const color = isDarkMode ? palette().common.black : palette().grey[500];
   const transparent = alpha(color, 0.16);
+
   return {
     z1: `0 1px 2px 0 ${transparent}`,
     z4: `0 4px 8px 0 ${transparent}`,

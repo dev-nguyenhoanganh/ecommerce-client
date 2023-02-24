@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { TypographyVariantsOptions } from '@mui/material';
 
 export function remToPx(value: any) {
