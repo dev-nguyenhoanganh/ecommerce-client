@@ -1,0 +1,25 @@
+name: 'ESLint (JS/TS) Action'
+description: 'Lints JavaScript/TypeScript code.'
+branding:
+  icon: check-circle
+  color: yellow
+on:
+  pull_request:
+    branches: [develop]
+    types: ['opened', 'reopened', 'ready_for_review', 'synchronize']
+
+jobs:
+  eslint:
+    name: eslint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: install node v12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: yarn install
+      run: yarn install
+    - name: eslint
+      uses: icrawl/action-eslint@v1
+      
