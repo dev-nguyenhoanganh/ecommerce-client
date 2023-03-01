@@ -22,3 +22,9 @@ getLCP
 jest-dom
 matchers
 DOM
+setOpen
+useState
+openNav
+onCloseNav
+setOpen
+BrowserRouter
